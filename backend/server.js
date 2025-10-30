@@ -1,24 +1,19 @@
-// server.js - usando dotenv para variables sensibles
+// server.js
 require('dotenv').config();
-const { Client } = require('pg');
+const express = require('express');
+const app = express();
 
-const client = new Client({
-    host: process.env.PGHOST,
-    port: Number(process.env.PGPORT || 5432),
-    database: process.env.PGDATABASE,
-    user: process.env.PGUSER,
-    password: process.env.PGPASSWORD,
+app.use(express.json());
+
+// Importar rutas
+const usuariosRouter = require('./routes/usuarios');
+app.use('/usuarios', usuariosRouter);
+
+// Middleware de error
+app.use((err, req, res, next) => {
+    console.error(err);
+    res.status(500).json({ error: 'Error interno del servidor' });
 });
 
-(async () => {
-    try {
-        await client.connect();
-        console.log('✅ Conectado (dotenv)');
-        const { rows } = await client.query('SELECT version()');
-        console.log('Postgres version:', rows[0]);
-    } catch (err) {
-        console.error('❌ Error:', err.message);
-    } finally {
-        await client.end();
-    }
-})();
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => console.log(`Servidor en http://localhost:${PORT}`));
