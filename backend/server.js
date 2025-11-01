@@ -9,6 +9,10 @@ app.use(express.json());
 const usuariosRouter = require('./routes/usuarios');
 app.use('/usuarios', usuariosRouter);
 
+const loginRouter = require('./routes/login');
+app.use('/login', loginRouter);
+
+
 // Middleware de error
 app.use((err, req, res, next) => {
     console.error(err);
