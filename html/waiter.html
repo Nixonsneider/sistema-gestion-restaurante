@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartRest - Panel Mesero</title>
+    <link rel="stylesheet" href="../css/waiter.css">
+    <link rel="stylesheet" href="../css/toast.css">
+    <script src="../js/toast.js"></script>
+    <script src="../js/waiter.js" defer></script>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>SmartRest - Mesero</h1>
+            <div class="user-info">
+                <span id="userName">Mesero</span>
+                <button class="btn-logout" id="btnLogout">Cerrar Sesión</button>
+            </div>
+        </header>
+
+        <main class="main-content">
+            <section id="section-tables" class="content-section active">
+                <h2>Mesas Disponibles</h2>
+                <div class="tables-grid" id="tablesGrid">
+                    <div class="loading">Cargando mesas...</div>
+                </div>
+            </section>
+
+            <section id="section-order" class="content-section">
+                <div class="order-header">
+                    <h2>Pedido - Mesa <span id="orderTableNumber">-</span></h2>
+                    <button class="btn-back" id="btnBackToTables">← Volver a Mesas</button>
+                </div>
+                
+                <div class="order-content">
+                    <div class="products-section">
+                        <h3>Agregar Productos</h3>
+                        <div class="search-box">
+                            <input type="text" id="searchProduct" placeholder="Buscar producto...">
+                        </div>
+                        <div class="products-list" id="productsList">
+                            <div class="loading">Cargando productos...</div>
+                        </div>
+                    </div>
+                    
+                    <div class="order-summary">
+                        <h3>Resumen del Pedido</h3>
+                        <div class="order-items" id="orderItems">
+                            <p class="empty-order">No hay productos en el pedido</p>
+                        </div>
+                        <div class="order-total">
+                            <strong>Total: $<span id="orderTotal">0.00</span></strong>
+                        </div>
+                        <button class="btn-primary btn-finish" id="btnFinishOrder">Finalizar Pedido</button>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <div class="modal" id="modal">
+        <div class="modal-content">
+            <h3 id="modalTitle">Modal</h3>
+            <div id="modalBody"></div>
+        </div>
+    </div>
+    
+    <div id="toast" class="toast"></div>
+</body>
+</html>
+
+

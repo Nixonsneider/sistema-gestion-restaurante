@@ -1,21 +1,41 @@
-<html lang="en">
+<!DOCTYPE html>
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <link rel="stylesheet" href="styles.css">
-    <script src="index.js"></script>
+    <title>SmartRest - Iniciar Sesión</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/toast.css">
+    <script src="js/index.js"></script>
+    <script src="js/toast.js"></script>
 </head>
 <body>
-    <div id= 'wrapper'>
+    <div id="wrapper">
         <div id="input-container">
-            <h2>Iniciar Sesion</h2>
-            <input type="text" id= "user" class="inputs" placeholder="Ingrese su Usuario">
-            <br>
-            <input type="password" id= "password" class="inputs" placeholder="Ingrese su Contraseña" id="">
-            <br>
-            <input type="button" value="Ingresar" class="inputs" id="enter">
+            <h2>Iniciar Sesión</h2>
+            
+            <div class="input-group">
+                <input type="email" id="email" class="inputs" placeholder="Email" autocomplete="email">
+            </div>
+            
+            <div class="input-group">
+                <input type="password" id="password" class="inputs" placeholder="Contraseña" autocomplete="current-password">
+            </div>
+            
+            <div class="input-group">
+                <select id="role" class="inputs">
+                    <option value="">Seleccionar rol...</option>
+                    <option value="administrativo">Administrativo</option>
+                    <option value="mesero">Mesero</option>
+                </select>
+            </div>
+            
+            <button type="button" id="enter" class="btn-login">
+                Ingresar
+            </button>
         </div>
     </div>
+    
+    <div id="toast" class="toast"></div>
 </body>
 </html>

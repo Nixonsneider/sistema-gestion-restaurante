@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartRest - Panel Administrativo</title>
+    <link rel="stylesheet" href="../css/admin.css">
+    <link rel="stylesheet" href="../css/toast.css">
+    <script src="../js/toast.js"></script>
+    <script src="../js/admin.js" defer></script>
+</head>
+<body>
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-header-content">
+                <h2>SmartRest</h2>
+                <button class="menu-toggle" id="menuToggle">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </div>
+            <p class="user-role" id="userRole">Administrador</p>
+        </div>
+        
+        <nav class="sidebar-nav">
+            <a href="#" class="nav-item active" data-section="productos">
+                <img src="../img/2771401.png" alt="Productos" class="nav-icon">
+                <span class="nav-text">Productos</span>
+            </a>
+            <a href="#" class="nav-item" data-section="usuarios">
+                <img src="../img/1077114.png" alt="Usuarios" class="nav-icon">
+                <span class="nav-text">Usuarios</span>
+            </a>
+            <a href="#" class="nav-item" data-section="mesas">
+                <img src="../img/333521.png" alt="Mesas" class="nav-icon">
+                <span class="nav-text">Mesas</span>
+            </a>
+            <a href="#" class="nav-item" data-section="pedidos">
+                <img src="../img/6633349.png" alt="Pedidos" class="nav-icon">
+                <span class="nav-text">Pedidos</span>
+            </a>
+        </nav>
+        
+        <div class="sidebar-footer">
+            <button class="btn-logout" id="btnLogout">
+                <img src="../img/126467.png" alt="Logout" class="logout-icon">
+                <span class="logout-text">Cerrar Sesión</span>
+            </button>
+        </div>
+    </div>
+
+    <div class="main-content">
+        <header class="header">
+            <h1 id="pageTitle">Gestión de Productos</h1>
+            <div class="header-user">
+                <span id="userName">Usuario</span>
+            </div>
+        </header>
+
+        <section id="section-productos" class="content-section active">
+            <div class="section-header">
+                <button class="btn-primary" id="btnAddProducto">+ Agregar Producto</button>
+            </div>
+
+            <div class="table-container">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Nombre</th>
+                            <th>Categoría</th>
+                            <th>Precio</th>
+                            <th>Disponible</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="productosTableBody">
+                        <tr>
+                            <td colspan="6" class="loading">Cargando productos...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section id="section-usuarios" class="content-section">
+            <div class="section-header">
+                <button class="btn-primary" id="btnAddUsuario">+ Agregar Usuario</button>
+            </div>
+
+            <div class="table-container">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Nombre</th>
+                            <th>Apellido</th>
+                            <th>Email</th>
+                            <th>Rol</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="usuariosTableBody">
+                        <tr>
+                            <td colspan="6" class="loading">Cargando usuarios...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section id="section-mesas" class="content-section">
+            <div class="section-header">
+                <button class="btn-primary" id="btnAddMesa">+ Agregar Mesa</button>
+            </div>
+
+            <div class="table-container">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Número</th>
+                            <th>Capacidad</th>
+                            <th>Estado</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="mesasTableBody">
+                        <tr>
+                            <td colspan="5" class="loading">Cargando mesas...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section id="section-pedidos" class="content-section">
+            <div class="table-container">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Mesa</th>
+                            <th>Usuario</th>
+                            <th>Fecha</th>
+                            <th>Estado</th>
+                            <th>Total</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="pedidosTableBody">
+                        <tr>
+                            <td colspan="7" class="loading">Cargando pedidos...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </div>
+
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modalTitle">Agregar Producto</h3>
+                <button class="modal-close" id="modalClose">&times;</button>
+            </div>
+            <div class="modal-body" id="modalBody">
+            </div>
+        </div>
+    </div>
+    
+    <div id="toast" class="toast"></div>
+</body>
+</html>
+

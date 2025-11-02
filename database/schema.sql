@@ -73,4 +73,5 @@ CREATE TABLE factura (
     total DECIMAL(10,2) NOT NULL
 );
 
-
+INSERT INTO usuario (nombre, apellido, email, contrasena, rol) 
+VALUES ('Admin', 'Sistema', 'admin@restaurante.com', 'admin123', 'administrativo');
