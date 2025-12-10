@@ -137,6 +137,26 @@ Aplicación web completa para la gestión de un restaurante, con panel administr
 - Se genera automáticamente la factura
 - La mesa queda disponible
 
+### 📈 Análisis de Ventas (Nuevo módulo)
+
+El panel administrativo ahora incluye un **apartado de análisis de ventas**, donde los administradores pueden visualizar métricas clave sobre el rendimiento del restaurante.
+
+#### Características del Análisis de Ventas
+- **💰 Suma total de ventas:** Muestra el valor total de todos los pedidos finalizados.
+- **🧾 Total de pedidos completados:** Número total de órdenes cerradas exitosamente.
+- **🎟️ Ticket promedio:** Promedio de venta por pedido.
+- **📅 Ventas del mes actual:** Total de ingresos generados en el mes en curso.
+- **🍔 Productos más vendidos:** Ranking de los productos con mayor cantidad de ventas.
+- **📊 Ventas por categoría:** Distribución de ventas agrupadas por tipo de producto (entradas, platos principales, bebidas, etc.).
+- **📆 Ventas de los últimos 7 días:** Gráfico de actividad semanal para visualizar la evolución reciente de las ventas.
+
+#### Objetivo del Módulo
+Brindar al administrador una **visión clara y actualizada del rendimiento del negocio**, facilitando la toma de decisiones estratégicas sobre productos, precios y gestión operativa.
+
+---
+
+
+
 ## 🎨 Interfaz y Características Visuales
 
 ### Diseño Responsivo
