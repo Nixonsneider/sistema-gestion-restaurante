@@ -52,7 +52,8 @@ function showSection(sectionName) {
         'productos': 'Gestión de Productos',
         'usuarios': 'Gestión de Usuarios',
         'mesas': 'Gestión de Mesas',
-        'pedidos': 'Gestión de Pedidos'
+        'pedidos': 'Gestión de Pedidos',
+        'analisis': 'Análisis de Ventas'
     };
     document.getElementById('pageTitle').textContent = titles[sectionName];
     
@@ -68,6 +69,9 @@ function showSection(sectionName) {
             break;
         case 'pedidos':
             loadPedidos();
+            break;
+        case 'analisis':
+            loadAnalisis();
             break;
     }
 }
@@ -712,6 +716,7 @@ async function loadPedidos() {
     try {
         const response = await fetch(`${API_URL}/pedidos`);
         const pedidos = await response.json();
+        // Filter only 'en curso' orders
         const pedidosEnCurso = pedidos.filter(p => p.estado === 'en curso');
         displayPedidos(pedidosEnCurso);
     } catch (error) {
@@ -820,6 +825,212 @@ async function finalizarPedidoAdmin(id) {
         console.error('Error al finalizar pedido:', error);
         alert('Error al conectar con el servidor');
     }
+}
+
+async function loadAnalisis() {
+    try {
+        // Cargar todos los pedidos
+        const pedidosResponse = await fetch(`${API_URL}/pedidos`);
+        const pedidos = await pedidosResponse.json();
+        
+        // Filtrar solo pedidos finalizados
+        const pedidosFinalizados = pedidos.filter(p => p.estado === 'finalizado');
+        
+        // Cargar detalles de todos los pedidos finalizados
+        const detallesPromises = pedidosFinalizados.map(async (pedido) => {
+            try {
+                const detalleResponse = await fetch(`${API_URL}/pedidos/${pedido.id_pedido}`);
+                const detalle = await detalleResponse.json();
+                return detalle.detalles || [];
+            } catch (error) {
+                console.error(`Error al cargar detalles del pedido ${pedido.id_pedido}:`, error);
+                return [];
+            }
+        });
+        
+        const detallesArrays = await Promise.all(detallesPromises);
+        const todosDetalles = detallesArrays.flat();
+        
+        // Cargar productos para obtener categorías
+        const productosResponse = await fetch(`${API_URL}/productos`);
+        const productos = await productosResponse.json();
+        const productosMap = {};
+        productos.forEach(p => {
+            productosMap[p.id_producto] = p;
+        });
+        
+        // Calcular estadísticas generales
+        calcularEstadisticasGenerales(pedidosFinalizados);
+        
+        // Calcular productos más vendidos
+        calcularProductosVendidos(todosDetalles, productosMap);
+        
+        // Calcular ventas por categoría
+        calcularVentasPorCategoria(todosDetalles, productosMap, pedidosFinalizados);
+        
+        // Calcular ventas por día
+        calcularVentasPorDia(pedidosFinalizados);
+        
+    } catch (error) {
+        console.error('Error al cargar análisis:', error);
+        document.getElementById('totalVentas').textContent = 'Error';
+        document.getElementById('totalPedidos').textContent = 'Error';
+        document.getElementById('promedioPedido').textContent = 'Error';
+        document.getElementById('ventasMes').textContent = 'Error';
+    }
+}
+
+function calcularEstadisticasGenerales(pedidosFinalizados) {
+    const totalVentas = pedidosFinalizados.reduce((sum, p) => sum + parseFloat(p.total || 0), 0);
+    const totalPedidos = pedidosFinalizados.length;
+    const promedioPedido = totalPedidos > 0 ? totalVentas / totalPedidos : 0;
+    
+    // Ventas del mes actual
+    const ahora = new Date();
+    const mesActual = ahora.getMonth();
+    const añoActual = ahora.getFullYear();
+    
+    const ventasMes = pedidosFinalizados
+        .filter(p => {
+            const fecha = new Date(p.fecha_hora);
+            return fecha.getMonth() === mesActual && fecha.getFullYear() === añoActual;
+        })
+        .reduce((sum, p) => sum + parseFloat(p.total || 0), 0);
+    
+    document.getElementById('totalVentas').textContent = `$${totalVentas.toFixed(2)}`;
+    document.getElementById('totalPedidos').textContent = totalPedidos;
+    document.getElementById('promedioPedido').textContent = `$${promedioPedido.toFixed(2)}`;
+    document.getElementById('ventasMes').textContent = `$${ventasMes.toFixed(2)}`;
+}
+
+function calcularProductosVendidos(detalles, productosMap) {
+    const productosVendidos = {};
+    
+    detalles.forEach(detalle => {
+        const idProducto = detalle.id_producto;
+        if (!productosVendidos[idProducto]) {
+            productosVendidos[idProducto] = {
+                nombre: detalle.producto_nombre || productosMap[idProducto]?.nombre || 'Desconocido',
+                categoria: productosMap[idProducto]?.categoria || 'Sin categoría',
+                cantidad: 0,
+                total: 0
+            };
+        }
+        productosVendidos[idProducto].cantidad += parseInt(detalle.cantidad || 0);
+        productosVendidos[idProducto].total += parseFloat(detalle.subtotal || 0);
+    });
+    
+    const productosArray = Object.values(productosVendidos)
+        .sort((a, b) => b.cantidad - a.cantidad);
+    
+    const tbody = document.getElementById('productosVendidosBody');
+    
+    if (productosArray.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="4" class="loading">No hay datos disponibles</td></tr>';
+        return;
+    }
+    
+    tbody.innerHTML = productosArray.map(p => `
+        <tr>
+            <td>${p.nombre}</td>
+            <td>${p.categoria}</td>
+            <td>${p.cantidad}</td>
+            <td>$${p.total.toFixed(2)}</td>
+        </tr>
+    `).join('');
+}
+
+function calcularVentasPorCategoria(detalles, productosMap, pedidosFinalizados) {
+    const ventasPorCategoria = {};
+    const totalVentas = pedidosFinalizados.reduce((sum, p) => sum + parseFloat(p.total || 0), 0);
+    
+    detalles.forEach(detalle => {
+        const producto = productosMap[detalle.id_producto];
+        const categoria = producto?.categoria || 'Sin categoría';
+        
+        if (!ventasPorCategoria[categoria]) {
+            ventasPorCategoria[categoria] = 0;
+        }
+        ventasPorCategoria[categoria] += parseFloat(detalle.subtotal || 0);
+    });
+    
+    const categoriasArray = Object.entries(ventasPorCategoria)
+        .map(([categoria, total]) => ({
+            categoria,
+            total,
+            porcentaje: totalVentas > 0 ? (total / totalVentas * 100) : 0
+        }))
+        .sort((a, b) => b.total - a.total);
+    
+    const tbody = document.getElementById('ventasCategoriaBody');
+    
+    if (categoriasArray.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="3" class="loading">No hay datos disponibles</td></tr>';
+        return;
+    }
+    
+    tbody.innerHTML = categoriasArray.map(c => `
+        <tr>
+            <td>${c.categoria}</td>
+            <td>$${c.total.toFixed(2)}</td>
+            <td>${c.porcentaje.toFixed(1)}%</td>
+        </tr>
+    `).join('');
+}
+
+function calcularVentasPorDia(pedidosFinalizados) {
+    const ventasPorDia = {};
+    const ahora = new Date();
+    
+    // Función auxiliar para obtener fecha en formato YYYY-MM-DD usando hora local
+    const obtenerFechaLocal = (fecha) => {
+        const año = fecha.getFullYear();
+        const mes = String(fecha.getMonth() + 1).padStart(2, '0');
+        const dia = String(fecha.getDate()).padStart(2, '0');
+        return `${año}-${mes}-${dia}`;
+    };
+    
+    // Inicializar últimos 7 días usando hora local
+    for (let i = 6; i >= 0; i--) {
+        const fecha = new Date(ahora);
+        fecha.setDate(fecha.getDate() - i);
+        fecha.setHours(0, 0, 0, 0); // Normalizar a medianoche
+        const fechaStr = obtenerFechaLocal(fecha);
+        ventasPorDia[fechaStr] = {
+            fecha: fechaStr,
+            fechaObj: new Date(fecha),
+            pedidos: 0,
+            total: 0
+        };
+    }
+    
+    // Procesar pedidos usando hora local
+    pedidosFinalizados.forEach(pedido => {
+        const fecha = new Date(pedido.fecha_hora);
+        const fechaStr = obtenerFechaLocal(fecha);
+        
+        if (ventasPorDia[fechaStr]) {
+            ventasPorDia[fechaStr].pedidos++;
+            ventasPorDia[fechaStr].total += parseFloat(pedido.total || 0);
+        }
+    });
+    
+    const diasArray = Object.values(ventasPorDia)
+        .map(dia => ({
+            fecha: dia.fechaObj.toLocaleDateString('es-ES', { weekday: 'short', day: 'numeric', month: 'short' }),
+            pedidos: dia.pedidos,
+            total: dia.total
+        }));
+    
+    const tbody = document.getElementById('ventasDiaBody');
+    
+    tbody.innerHTML = diasArray.map(d => `
+        <tr>
+            <td>${d.fecha}</td>
+            <td>${d.pedidos}</td>
+            <td>$${d.total.toFixed(2)}</td>
+        </tr>
+    `).join('');
 }
 
 function setupModalHandlers() {

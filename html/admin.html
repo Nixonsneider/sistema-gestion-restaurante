@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,6 +10,7 @@
     <script src="../js/toast.js"></script>
     <script src="../js/admin.js" defer></script>
 </head>
+
 <body>
     <div class="sidebar-overlay" id="sidebarOverlay"></div>
     <div class="sidebar" id="sidebar">
@@ -23,7 +25,7 @@
             </div>
             <p class="user-role" id="userRole">Administrador</p>
         </div>
-        
+
         <nav class="sidebar-nav">
             <a href="#" class="nav-item active" data-section="productos">
                 <img src="../img/2771401.png" alt="Productos" class="nav-icon">
@@ -41,8 +43,12 @@
                 <img src="../img/6633349.png" alt="Pedidos" class="nav-icon">
                 <span class="nav-text">Pedidos</span>
             </a>
+            <a href="#" class="nav-item" data-section="analisis">
+                <img src="../img/6633349.png" alt="Análisis de Ventas" class="nav-icon">
+                <span class="nav-text">Análisis de Ventas</span>
+            </a>
         </nav>
-        
+
         <div class="sidebar-footer">
             <button class="btn-logout" id="btnLogout">
                 <img src="../img/126467.png" alt="Logout" class="logout-icon">
@@ -158,6 +164,94 @@
                 </table>
             </div>
         </section>
+
+        <section id="section-analisis" class="content-section">
+            <div class="analisis-container">
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <h3>Total de Ventas</h3>
+                        <p class="stat-value" id="totalVentas">$0.00</p>
+                        <p class="stat-label">Suma de todos los pedidos finalizados</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Pedidos Finalizados</h3>
+                        <p class="stat-value" id="totalPedidos">0</p>
+                        <p class="stat-label">Total de pedidos completados</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Promedio por Pedido</h3>
+                        <p class="stat-value" id="promedioPedido">$0.00</p>
+                        <p class="stat-label">Ticket promedio</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Ventas del Mes</h3>
+                        <p class="stat-value" id="ventasMes">$0.00</p>
+                        <p class="stat-label">Ventas del mes actual</p>
+                    </div>
+                </div>
+
+                <div class="analisis-section">
+                    <h2>Productos Más Vendidos</h2>
+                    <div class="table-container">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Producto</th>
+                                    <th>Categoría</th>
+                                    <th>Cantidad Vendida</th>
+                                    <th>Total Vendido</th>
+                                </tr>
+                            </thead>
+                            <tbody id="productosVendidosBody">
+                                <tr>
+                                    <td colspan="4" class="loading">Cargando datos...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="analisis-section">
+                    <h2>Ventas por Categoría</h2>
+                    <div class="table-container">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Categoría</th>
+                                    <th>Total Vendido</th>
+                                    <th>Porcentaje</th>
+                                </tr>
+                            </thead>
+                            <tbody id="ventasCategoriaBody">
+                                <tr>
+                                    <td colspan="3" class="loading">Cargando datos...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="analisis-section">
+                    <h2>Ventas por Día (Últimos 7 días)</h2>
+                    <div class="table-container">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Fecha</th>
+                                    <th>Pedidos</th>
+                                    <th>Total Vendido</th>
+                                </tr>
+                            </thead>
+                            <tbody id="ventasDiaBody">
+                                <tr>
+                                    <td colspan="3" class="loading">Cargando datos...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
     </div>
 
     <div id="modal" class="modal">
@@ -170,8 +264,8 @@
             </div>
         </div>
     </div>
-    
+
     <div id="toast" class="toast"></div>
 </body>
-</html>
 
+</html>
